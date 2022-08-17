@@ -1,4 +1,4 @@
-module github.com/drako0812/gollect/v2
+module github.com/drako0812/gollect
 
 go 1.19
 
