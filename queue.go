@@ -75,3 +75,7 @@ func (q *Queue[T]) PopFront() {
 func (q *Queue[T]) Swap(other *Queue[T]) {
 	q.data.Swap(&other.data)
 }
+
+func (q *Queue[T]) String() string {
+	return q.data.String()
+}

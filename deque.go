@@ -95,3 +95,7 @@ func (d *Deque[T]) PopFront() {
 func (d *Deque[T]) Swap(other *Deque[T]) {
 	d.data.Swap(&other.data)
 }
+
+func (d *Deque[T]) String() string {
+	return d.data.String()
+}

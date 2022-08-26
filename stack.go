@@ -36,42 +36,46 @@ func MakeStackFromStack[T any](other Stack[T]) *Stack[T] {
 	return &Stack[T]{data: NewVectorFromVector(other.data)}
 }
 
-func (d *Stack[T]) Top() T {
-	return d.data.Back()
+func (s *Stack[T]) Top() T {
+	return s.data.Back()
 }
 
-func (d *Stack[T]) TopRef() *T {
-	return d.data.BackRef()
+func (s *Stack[T]) TopRef() *T {
+	return s.data.BackRef()
 }
 
-func (d *Stack[T]) Data() []T {
-	return d.data.Data()
+func (s *Stack[T]) Data() []T {
+	return s.data.Data()
 }
 
-func (d *Stack[T]) IsEmpty() bool {
-	return d.data.IsEmpty()
+func (s *Stack[T]) IsEmpty() bool {
+	return s.data.IsEmpty()
 }
 
-func (d *Stack[T]) Size() int {
-	return d.data.Size()
+func (s *Stack[T]) Size() int {
+	return s.data.Size()
 }
 
-func (d *Stack[T]) Clear() {
-	d.data.Clear()
+func (s *Stack[T]) Clear() {
+	s.data.Clear()
 }
 
-func (d *Stack[T]) Push(value T) {
-	d.data.PushBack(value)
+func (s *Stack[T]) Push(value T) {
+	s.data.PushBack(value)
 }
 
-func (d *Stack[T]) PushRef(value *T) {
-	d.data.PushBackRef(value)
+func (s *Stack[T]) PushRef(value *T) {
+	s.data.PushBackRef(value)
 }
 
-func (d *Stack[T]) Pop() {
-	d.data.PopBack()
+func (s *Stack[T]) Pop() {
+	s.data.PopBack()
 }
 
-func (d *Stack[T]) Swap(other *Stack[T]) {
-	d.data.Swap(&other.data)
+func (s *Stack[T]) Swap(other *Stack[T]) {
+	s.data.Swap(&other.data)
+}
+
+func (s *Stack[T]) String() string {
+	return s.data.String()
 }

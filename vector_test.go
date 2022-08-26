@@ -1,6 +1,10 @@
 package gollect
 
-import "testing"
+import (
+	"math/rand"
+	"testing"
+	"time"
+)
 
 func TestNewVectorInt64(t *testing.T) {
 	v := NewVector[int64]()
@@ -602,4 +606,134 @@ func TestIsSortedFunc(t *testing.T) {
 	if !v2.IsSortedFunc(f) {
 		t.Fatalf("v2 should be sorted")
 	}
+}
+
+const vectorItemsCount = 50000000
+
+var vectorSearchIndex int
+var vectorVec Vector[Int]
+
+func BenchmarkSearchFunctions(b *testing.B) {
+	rand.Seed(time.Now().UnixNano())
+	//rand.Seed(12345)
+	vectorSearchIndex = rand.Intn(vectorItemsCount)
+	//vectorSearchIndex = int(vectorItemsCount * 0.75)
+	vectorVec = NewVector[Int]()
+	for i := 0; i < vectorItemsCount; i++ {
+		vectorVec.PushBack(Int(rand.Int()))
+		//vectorVec.PushBack(Int(i))
+	}
+
+	b.Run("OrderedSearch", SubBenchmarkOrderedSearch)
+	b.Run("OrderedRefSearch", SubBenchmarkOrderedRefSearch)
+	b.Run("OrderedSearchRef", SubBenchmarkOrderedSearchRef)
+	b.Run("OrderedRefSearchRef", SubBenchmarkOrderedRefSearchRef)
+
+	ChunkMultiplier = 1
+
+	b.Run("SearchChunk1", SubBenchmarkSearch)
+	b.Run("RefSearchChunk1", SubBenchmarkRefSearch)
+	b.Run("SearchRefChunk1", SubBenchmarkSearchRef)
+	b.Run("RefSearchRefChunk1", SubBenchmarkRefSearchRef)
+
+	ChunkMultiplier = 2
+
+	b.Run("SearchChunk2", SubBenchmarkSearch)
+	b.Run("RefSearchChunk2", SubBenchmarkRefSearch)
+	b.Run("SearchRefChunk2", SubBenchmarkSearchRef)
+	b.Run("RefSearchRefChunk2", SubBenchmarkRefSearchRef)
+
+	ChunkMultiplier = 4
+
+	b.Run("SearchChunk4", SubBenchmarkSearch)
+	b.Run("RefSearchChunk4", SubBenchmarkRefSearch)
+	b.Run("SearchRefChunk4", SubBenchmarkSearchRef)
+	b.Run("RefSearchRefChunk4", SubBenchmarkRefSearchRef)
+
+	ChunkMultiplier = 8
+
+	b.Run("SearchChunk8", SubBenchmarkSearch)
+	b.Run("RefSearchChunk8", SubBenchmarkRefSearch)
+	b.Run("SearchRefChunk8", SubBenchmarkSearchRef)
+	b.Run("RefSearchRefChunk8", SubBenchmarkRefSearchRef)
+}
+
+func SubBenchmarkOrderedSearch(b *testing.B) {
+	searched_for := vectorVec.At(vectorSearchIndex)
+	vectorVec.OrderedSearch(searched_for)
+	// if found {
+	// 	b.Logf("Found %v at %v (expected %v)", searched_for, idx, search_index)
+	// } else {
+	// 	b.Logf("Did not find %v at %v", searched_for, search_index)
+	// }
+}
+
+func SubBenchmarkOrderedRefSearch(b *testing.B) {
+	searched_for := vectorVec.AtRef(vectorSearchIndex)
+	vectorVec.OrderedRefSearch(searched_for)
+	// if found {
+	// 	b.Logf("Found %v(%v) at %v (expected %v)", *searched_for, searched_for, idx, search_index)
+	// } else {
+	// 	b.Logf("Did not find %v(%v) at %v", searched_for, *searched_for, search_index)
+	// }
+}
+
+func SubBenchmarkOrderedSearchRef(b *testing.B) {
+	searched_for := vectorVec.At(vectorSearchIndex)
+	vectorVec.OrderedSearchRef(searched_for)
+	// if found != nil {
+	// 	b.Logf("Found %v(%v)", *found, found)
+	// } else {
+	// 	b.Logf("Did not find %v", searched_for)
+	// }
+}
+
+func SubBenchmarkOrderedRefSearchRef(b *testing.B) {
+	searched_for := vectorVec.AtRef(vectorSearchIndex)
+	vectorVec.OrderedRefSearchRef(searched_for)
+	// if found != nil {
+	// 	b.Logf("Found %v(%v)", *found, found)
+	// } else {
+	// 	b.Logf("Did not find %v(%v)", *searched_for, searched_for)
+	// }
+}
+
+func SubBenchmarkSearch(b *testing.B) {
+	searched_for := vectorVec.At(vectorSearchIndex)
+	vectorVec.Search(searched_for)
+	// if found {
+	// 	b.Logf("Found %v at %v (expected %v)", searched_for, idx, search_index)
+	// } else {
+	// 	b.Logf("Did not find %v at %v", searched_for, search_index)
+	// }
+}
+
+func SubBenchmarkRefSearch(b *testing.B) {
+	searched_for := vectorVec.AtRef(vectorSearchIndex)
+	vectorVec.RefSearch(searched_for)
+	// if found {
+	// 	b.Logf("Found %v(%v) at %v (expected %v)", *searched_for, searched_for, idx, search_index)
+	// } else {
+	// 	b.Logf("Did not find %v(%v) at %v", searched_for, *searched_for, search_index)
+	// }
+}
+
+func SubBenchmarkSearchRef(b *testing.B) {
+	searched_for := vectorVec.At(vectorSearchIndex)
+	vectorVec.SearchRef(searched_for)
+	// if found != nil {
+	// 	b.Logf("Found %v(%v)", *found, found)
+	// } else {
+	// 	b.Logf("Did not find %v", searched_for)
+	// }
+}
+
+func SubBenchmarkRefSearchRef(b *testing.B) {
+	searched_for := vectorVec.AtRef(vectorSearchIndex)
+	vectorVec.RefSearchRef(searched_for)
+	// if found != nil {
+	// 	b.Logf("Found %v(%v)", *found, found)
+	// } else {
+	// 	b.Logf("Did not find %v(%v)", *searched_for, searched_for)
+	// }
 }

@@ -2,6 +2,8 @@
 
 *Gollect* is a simple collections/data structure library with functionality similar to the STL collections from C++. It utilizes *Go's* new generics functionality.
 
+Documentation can be found [HERE](https://pkg.go.dev/github.com/drako0812/gollect).
+
 ## Contents
 
 This package currently implements the following collections.
