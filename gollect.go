@@ -28,6 +28,18 @@ type GeneralCollector[T any] interface {
 	PushFrontRef(value *T)
 	PopBack()
 	PopFront()
+	Visit(visitor CollectionVisitor[T])
+	VisitReverse(visitor CollectionVisitor[T])
+	ContainsValue(value T) bool
+	ContainsRef(value *T) bool
+	OrderedSearch(value T) (found bool, index int)
+	OrderedRefSearch(value *T) (found bool, index int)
+	OrderedSearchRef(value T) *T
+	OrderedRefSearchRef(value *T) *T
+	Search(value T) (found bool, index int)
+	RefSearch(value *T) (found bool, index int)
+	SearchRef(value T) *T
+	RefSearchRef(value *T) *T
 	fmt.Stringer
 }
 

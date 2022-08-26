@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+func TestIsNVectorGeneralCollector(t *testing.T) {
+	vec := NewNVectorFromData[int64](1, 2, 3, 4, 5)
+
+	if _, isGeneralCollector := interface{}(&vec).(GeneralCollector[int64]); !isGeneralCollector {
+		t.Fatalf("NVector[int64] should be a GeneralCollector[int64]")
+	}
+}
+
 const nVectorItemsCount = 50000000
 
 var nVectorSearchIndex int

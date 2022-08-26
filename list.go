@@ -364,6 +364,128 @@ func (l *List[T]) VisitReverse(visitor CollectionVisitor[T]) {
 	}
 }
 
+func (l *List[T]) ContainsValue(value T) bool {
+	if l.IsEmpty() {
+		return false
+	}
+	if _, isEqComparable := interface{}(l.FrontRef()).(EqualityComparable[T]); !isEqComparable {
+		return false
+	}
+	ret := false
+	idx := 0
+	l.Visit(func(vv *T, break_out *bool) {
+		vvv, _ := interface{}(vv).(EqualityComparable[T])
+		if vvv.Equal(value) {
+			ret = true
+			*break_out = true
+		}
+		idx++
+	})
+	return ret
+}
+
+func (l *List[T]) ContainsRef(value *T) bool {
+	if l.IsEmpty() {
+		return false
+	}
+	ret := false
+	idx := 0
+	l.Visit(func(vv *T, break_out *bool) {
+		if vv == value {
+			ret = true
+			*break_out = true
+		}
+		idx++
+	})
+	return ret
+}
+
+func (l *List[T]) OrderedSearch(value T) (found bool, index int) {
+	if l.IsEmpty() {
+		return false, -1
+	}
+	if _, isEqComparable := interface{}(l.FrontRef()).(EqualityComparable[T]); !isEqComparable {
+		return false, -1
+	}
+	found = false
+	index = 0
+	l.Visit(func(vv *T, break_out *bool) {
+		vvv, _ := interface{}(vv).(EqualityComparable[T])
+		if vvv.Equal(value) {
+			found = true
+			*break_out = true
+		} else {
+			index++
+		}
+	})
+	return
+}
+
+func (l *List[T]) OrderedRefSearch(value *T) (found bool, index int) {
+	if l.IsEmpty() {
+		return false, -1
+	}
+	found = false
+	index = 0
+	l.Visit(func(vv *T, break_out *bool) {
+		if vv == value {
+			found = true
+			*break_out = true
+		} else {
+			index++
+		}
+	})
+	return
+}
+
+func (l *List[T]) OrderedSearchRef(value T) *T {
+	if l.IsEmpty() {
+		return nil
+	}
+	if _, isEqComparable := interface{}(l.FrontRef()).(EqualityComparable[T]); !isEqComparable {
+		return nil
+	}
+	var ret *T = nil
+	l.Visit(func(vv *T, break_out *bool) {
+		vvv, _ := interface{}(vv).(EqualityComparable[T])
+		if vvv.Equal(value) {
+			ret = vv
+			*break_out = true
+		}
+	})
+	return ret
+}
+
+func (l *List[T]) OrderedRefSearchRef(value *T) *T {
+	if l.IsEmpty() {
+		return nil
+	}
+	var ret *T = nil
+	l.Visit(func(vv *T, break_out *bool) {
+		if vv == value {
+			ret = vv
+			*break_out = true
+		}
+	})
+	return ret
+}
+
+func (l *List[T]) Search(value T) (found bool, index int) {
+	return l.OrderedSearch(value)
+}
+
+func (l *List[T]) RefSearch(value *T) (found bool, index int) {
+	return l.OrderedRefSearch(value)
+}
+
+func (l *List[T]) SearchRef(value T) *T {
+	return l.OrderedSearchRef(value)
+}
+
+func (l *List[T]) RefSearchRef(value *T) *T {
+	return l.OrderedRefSearchRef(value)
+}
+
 func (l *List[T]) String() string {
 	var builder strings.Builder
 	fmt.Fprintf(&builder, "{")

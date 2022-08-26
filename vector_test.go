@@ -608,6 +608,14 @@ func TestIsSortedFunc(t *testing.T) {
 	}
 }
 
+func TestIsVectorGeneralCollector(t *testing.T) {
+	vec := NewVectorFromData[Int64](1, 2, 3, 4, 5)
+
+	if _, isGeneralCollector := interface{}(&vec).(GeneralCollector[Int64]); !isGeneralCollector {
+		t.Fatalf("Vector[Int64] should be a GeneralCollector[Int64]")
+	}
+}
+
 const vectorItemsCount = 50000000
 
 var vectorSearchIndex int
